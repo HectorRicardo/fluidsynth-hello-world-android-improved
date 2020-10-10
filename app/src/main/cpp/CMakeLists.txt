@@ -74,13 +74,11 @@ set_target_properties(preloadable_libiconv PROPERTIES IMPORTED_LOCATION ${fluids
 add_library(my_main_lib SHARED my_main_lib.c)
 
 # Specifies the directory where the C or C++ source coude will look the #include <yourlibrarh.h> header files
-
 target_include_directories(my_main_lib PRIVATE ${fluidsynth_DIR}/include)
 
 # Specifies libraries CMake should link to your target library. You
 # can link multiple libraries, such as libraries you define in this
 # build script, prebuilt third-party libraries, or system libraries.
-
 target_link_libraries(
         my_main_lib
         libc++_shared

@@ -37,7 +37,7 @@ public class Synthesizer {
     private void writeFileToPrivateStorage(InputStream is, String toFile) throws IOException {
         int bytes_read;
         final byte[] buffer = new byte[4096];
-        FileOutputStream fos = context.openFileOutput(toFile, Context.MODE_PRIVATE);
+        final FileOutputStream fos = context.openFileOutput(toFile, Context.MODE_PRIVATE);
         while ((bytes_read = is.read(buffer)) != -1) {
             fos.write(buffer, 0, bytes_read); // write
         }
