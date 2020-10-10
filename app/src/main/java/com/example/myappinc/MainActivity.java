@@ -1,56 +1,72 @@
 package com.example.myappinc;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Context;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.view.View;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    // Used to load the 'native-lib' library on application startup.
-    static {
-        System.loadLibrary("my_main_lib");
-    }
+    private final Synthesizer synthesizer = new Synthesizer(this);
+    private boolean playing = false;
+
+    private final Runnable melodyRunnable = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                synthesizer.noteOn(Notes.C4);
+                synthesizer.noteOn(Notes.E4);
+                synthesizer.noteOn(Notes.G4);
+                Thread.sleep(500);
+                synthesizer.noteOff(Notes.C4);
+                synthesizer.noteOff(Notes.E4);
+                synthesizer.noteOff(Notes.G4);
+
+                synthesizer.noteOn(Notes.D4);
+                synthesizer.noteOn(Notes.F4);
+                synthesizer.noteOn(Notes.A4);
+                Thread.sleep(500);
+                synthesizer.noteOff(Notes.D4);
+                synthesizer.noteOff(Notes.F4);
+                synthesizer.noteOff(Notes.A4);
+
+                synthesizer.noteOn(Notes.E4);
+                synthesizer.noteOn(Notes.G4);
+                synthesizer.noteOn(Notes.B4);
+                Thread.sleep(500);
+                synthesizer.noteOff(Notes.E4);
+                synthesizer.noteOff(Notes.G4);
+                synthesizer.noteOff(Notes.B4);
+
+            } catch (InterruptedException ignored) {
+            } finally {
+                playing = false;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Example of a call to a native method
-        TextView tv = findViewById(R.id.sample_text);
-        String path;
-        try {
-            String fileName = "my_temp_file.sf2";
-            writeFileToPrivateStorage(getAssets().open("example.sf2"), fileName);
-            path = getApplicationContext().getFilesDir().toString() + "/" + fileName;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        String myFinalString = stringFromJNI(path) + " " + path;
-        tv.setText(myFinalString);
+        synthesizer.open("example.sf2");
+
+        synthesizer.programChange(5);
+
+        synthesizer.controlChange(65, 127);
+        synthesizer.controlChange(5, 1);
     }
 
-    public void writeFileToPrivateStorage(InputStream is, String toFile) throws IOException {
-        int bytes_read;
-        byte[] buffer = new byte[4096];
-        FileOutputStream fos = openFileOutput(toFile, Context.MODE_PRIVATE);
-        while ((bytes_read = is.read(buffer)) != -1)
-            fos.write(buffer, 0, bytes_read); // write
-
-        fos.close();
-        is.close();
+    public void play(View view) {
+        if (playing) return;
+        playing = true;
+        new Thread(melodyRunnable).start();
     }
 
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    public native boolean stringFromJNI(String path);
+    @Override
+    protected void onDestroy() {
+        synthesizer.close();
+        super.onDestroy();
+    }
 }
