@@ -71,7 +71,7 @@ add_library(preloadable_libiconv SHARED IMPORTED)
 set_target_properties(preloadable_libiconv PROPERTIES IMPORTED_LOCATION ${distribution_DIR}/fluidsynth/lib/${ANDROID_ABI}/preloadable_libiconv.so)
 
 # Main library (which is not a library per se, it is the top-most library, which is really application code
-add_library(my_main_lib SHARED my_main_lib.cpp)
+add_library(my_main_lib SHARED my_main_lib.c)
 
 # Specifies the directory where the C or C++ source coude will look the #include <yourlibrarh.h> header files
 
