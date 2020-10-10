@@ -22,19 +22,10 @@ set(distribution_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../distribution)
 # ${ANDROID_ABI} is handy for our purpose here. Probably this ${ANDROID_ABI} is
 # the most valuable thing of this sample, the rest are pretty much normal cmake
 add_library(lib_gperf SHARED IMPORTED)
-set_target_properties(lib_gperf PROPERTIES IMPORTED_LOCATION
-        ${distribution_DIR}/gperf/lib/${ANDROID_ABI}/libgperf.so)
+set_target_properties(lib_gperf PROPERTIES IMPORTED_LOCATION ${distribution_DIR}/gperf/lib/${ANDROID_ABI}/libgperf.so)
 
-# build application's shared lib
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
+add_library(native-lib SHARED native-lib.cpp)
 
-add_library(native-lib SHARED
-        native-lib.cpp)
+target_include_directories(native-lib PRIVATE ${distribution_DIR}/gperf/include)
 
-target_include_directories(native-lib PRIVATE
-        ${distribution_DIR}/gperf/include)
-
-target_link_libraries(native-lib
-        android
-        lib_gperf
-        log)
+target_link_libraries(native-lib lib_gperf)
