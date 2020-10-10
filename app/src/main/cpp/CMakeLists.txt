@@ -71,16 +71,16 @@ add_library(preloadable_libiconv SHARED IMPORTED)
 set_target_properties(preloadable_libiconv PROPERTIES IMPORTED_LOCATION ${fluidsynth_DIR}/lib/${ANDROID_ABI}/preloadable_libiconv.so)
 
 # Main library (which is not a library per se, it is the top-most library, which is really application code
-add_library(my_main_lib SHARED my_main_lib.c)
+add_library(fluidsynth_wrapper SHARED fluidsynth_wrapper.c)
 
 # Specifies the directory where the C or C++ source coude will look the #include <yourlibrarh.h> header files
-target_include_directories(my_main_lib PRIVATE ${fluidsynth_DIR}/include)
+target_include_directories(fluidsynth_wrapper PRIVATE ${fluidsynth_DIR}/include)
 
 # Specifies libraries CMake should link to your target library. You
 # can link multiple libraries, such as libraries you define in this
 # build script, prebuilt third-party libraries, or system libraries.
 target_link_libraries(
-        my_main_lib
+        fluidsynth_wrapper
         libc++_shared
         libcharset
         libffi

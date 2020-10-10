@@ -19,7 +19,7 @@ public class Synthesizer {
             writeFileToPrivateStorage(context.getAssets().open(soundfont), soundfont);
             final String path = context.getApplicationContext().getFilesDir().toString() + "/" + soundfont;
             if (!openFluidSynth(path)) {
-                throw new RuntimeException("Soundfont " + soundfont + " not found");
+                throw new RuntimeException("fluidsynth_wrapper: Unable to loud soundfont " + soundfont + " at " + path + ".");
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -46,6 +46,6 @@ public class Synthesizer {
     }
 
     static {
-        System.loadLibrary("my_main_lib");
+        System.loadLibrary("fluidsynth_wrapper");
     }
 }
