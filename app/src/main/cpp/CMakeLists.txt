@@ -5,12 +5,7 @@ cmake_minimum_required(VERSION 3.4.1)
 
 set(distribution_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../distribution)
 
-# Creates and names a library, sets it as either STATIC
-# or SHARED, and provides the relative paths to its source code.
-# You can define multiple libraries, and CMake builds them for you.
-# Gradle automatically packages shared libraries with your APK.
-
-add_library(lib_gperf SHARED IMPORTED)
+# Adds fluidsynth dependencies
 
 add_library(libc++_shared SHARED IMPORTED)
 set_target_properties(libc++_shared PROPERTIES IMPORTED_LOCATION ${distribution_DIR}/fluidsynth/lib/${ANDROID_ABI}/libc++_shared.so)
@@ -75,11 +70,11 @@ set_target_properties(libz PROPERTIES IMPORTED_LOCATION ${distribution_DIR}/flui
 add_library(preloadable_libiconv SHARED IMPORTED)
 set_target_properties(preloadable_libiconv PROPERTIES IMPORTED_LOCATION ${distribution_DIR}/fluidsynth/lib/${ANDROID_ABI}/preloadable_libiconv.so)
 
+# Main library (which is not a library per se, it is the top-most library, which is really application code
 add_library(my_main_lib SHARED my_main_lib.cpp)
 
-# Unknown
+# Specifies the directory where the C or C++ source coude will look the #include <yourlibrarh.h> header files
 
-set_target_properties(lib_gperf PROPERTIES IMPORTED_LOCATION ${distribution_DIR}/gperf/lib/${ANDROID_ABI}/libgperf.so)
 target_include_directories(my_main_lib PRIVATE ${distribution_DIR}/gperf/include ${distribution_DIR}/fluidsynth/include)
 
 # Specifies libraries CMake should link to your target library. You
@@ -88,9 +83,6 @@ target_include_directories(my_main_lib PRIVATE ${distribution_DIR}/gperf/include
 
 target_link_libraries(
         my_main_lib
-        lib_gperf
-
-
         libc++_shared
         libcharset
         libffi
